@@ -45,6 +45,7 @@ def computeLimits(img, discardPct):
     #np thank you
     newMin = np.searchsorted(cumHist, discardCnt)
     #another np dub + list reversal for the sorted histogram now minus our discard limit
+    #this is the min-max stretch applied to the pixel
     newMax = 255 - np.searchsorted(cumHist[::-1], discardCnt)
 
     return newMin, newMax
@@ -54,18 +55,18 @@ if __name__ == "__main__":
     
     imgPath = sys.argv[1]
     discardPcts = list(map(float, sys.argv[2:]))
-
-    # Read the grayscale image
     img = cv2.imread(imgPath, cv2.IMREAD_GRAYSCALE)
-
-    
     oldMin = np.min(img)
     oldMax = np.max(img)
+    print("orig:", oldMin,oldMax)
     #simple stretch before the discard
     enhA = linearStretch(img, oldMin=oldMin, oldMax=oldMax)
-    plotImgHist(img, enhA, 'input Img', 'Enhanced Img (Stretch)')
+    print("stretch min-max:", np.min(enhA),np.max(enhA))
+
+    plotImgHist(img, enhA, 'input Img', ' Img (Stretch)')
 
     for pct in discardPcts:
         newMin, newMax = computeLimits(img, discardPct=pct)
         enhB = linearStretch(img, oldMin=newMin, oldMax=newMax)
+        print("discard min-max:", np.min(enhB),np.max(enhB))
         plotImgHist(img, enhB, 'input Img', f'stretch Img ({pct}% Discard)')

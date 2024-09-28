@@ -19,5 +19,6 @@ print("Args: ", input_name,", ",output_name, "," , threshold)
 #read image in using cv and should be gray
 img = cv.imread(input_name, cv.IMREAD_GRAYSCALE)
 # use beast mode np.where which goes over the whole container and does an if + return 255 or 0
+# tldr - python vectorization cool
 img = np.where(img > threshold,255,0)
 cv.imwrite(output_name,img)
